@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../../cvutchat-data/models/User');
+const axios = require('axios');
 
 const protect = async (req, res, next) => {
   let token;
@@ -10,7 +10,11 @@ const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select('-password');
+
+      // Replace direct User model usage with a call to cvutchat-data service
+      const response = await axios.get(`http://data:5000/api/users/${decoded.id}`);
+      req.user = response.data;
+
       next();
     } catch (error) {
       res.status(401).json({ message: 'Not authorized, token failed' });
