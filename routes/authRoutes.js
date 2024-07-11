@@ -1,27 +1,20 @@
-const axios = require('axios');
 const express = require("express");
 const router = express.Router();
+const generateToken = require('../utils/generateToken');
+const verifyTokenMiddleware = require('../middlewares/authMiddleware').protect;
 
-const registerUser = async (req, res) => {
+router.post('/generateToken', async (req, res) => {
   try {
-    const response = await axios.post('http://data/api/auth/register', req.body);
-    res.json(response.data);
+    const token = generateToken(req.body.userId);
+    res.json({ token });
   } catch (error) {
-    res.status(500).json({ message: 'Error communicating with cvutchat-data service' });
+    console.error(error);
+    res.status(500).json({ message: 'Error generating token' });
   }
-};
+});
 
-const loginUser = async (req, res) => {
-  try {
-    const response = await axios.post('http://data/api/auth/login', req.body);
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({ message: 'Error communicating with cvutchat-data service' });
-  }
-}
-
-
-router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.get('/verifyToken', verifyTokenMiddleware, (req, res) => {
+  res.json({ message: 'Token is valid', user: req.user });
+});
 
 module.exports = router;
