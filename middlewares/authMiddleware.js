@@ -1,6 +1,7 @@
 const verifyToken = require('../utils/verifyToken');
 
 const protect = async (req, res, next) => {
+  console.log('IN Auth Middleware');
   let token;
   if (
     req.headers.authorization &&
