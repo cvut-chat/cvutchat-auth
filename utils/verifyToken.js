@@ -8,7 +8,7 @@ const verifyToken = async (token) => {
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   // check that decoded id exists in the database
-  const response = await axios.get(`http://rest/api/checkId/${decoded.id}`);
+  const response = await axios.get(`http://rest/api/auth/checkId/${decoded.id}`);
   // if the user does not exist, throw an error
   if (response.status !== 200) {
     throw new Error('User does not exist');
