@@ -5,7 +5,7 @@ const verifyTokenMiddleware = require('../middlewares/authMiddleware').protect;
 
 router.post('/generateToken', async (req, res) => {
   try {
-    const token = generateToken(req.body.username); //TODO username is unique but use user _id instead ?
+    const token = generateToken(req.body._id);
     res.json({ token });
   } catch (error) {
     console.error(error);
