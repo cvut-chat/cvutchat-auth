@@ -7,9 +7,13 @@ const verifyToken = async (token) => {
   }
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  // TODO Auth only communicate with front and rest
-  const response = await axios.get(`http://data/api/auth/${decoded.id}`);
-  return response.data;
-};
+  // check that decoded id exists in the database
+  const response = await axios.get(`http://rest/api/checkId/${decoded.id}`);
+  // if the user does not exist, throw an error
+  if (response.status !== 200) {
+    throw new Error('User does not exist');
+  }
+  return decoded;
+}
 
 module.exports = verifyToken;
